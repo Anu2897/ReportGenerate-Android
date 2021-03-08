@@ -1,0 +1,3 @@
+include ':GetAuditReport'
+include ':app'
+rootProject.name = "BuildLibrary"
