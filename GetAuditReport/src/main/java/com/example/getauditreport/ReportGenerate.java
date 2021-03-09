@@ -17,15 +17,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ReportGenerate {
-    static Context context;
 
-    public  static void run(){
+    public  static void run(Context context){
         final Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                writeLogs();
-                generate();
+                writeLogs(context);
+                generate(context);
             }
         }, 60000);
 
@@ -33,7 +32,7 @@ public class ReportGenerate {
 
 
 
-    private  static void writeLogs() {
+    private  static void writeLogs(Context context) {
         StringBuilder log = new StringBuilder();
 
         FileOutputStream fos;
@@ -63,7 +62,7 @@ public class ReportGenerate {
         }
     }
 
-    private  static void generate() {
+    private  static void generate(Context context) {
         File file = new File(context.getFilesDir() ,"logs.txt");
         FileOutputStream fos;
         String  id= " ", auto_integrate = " ",sdk_version = " ",sdk_initialize=" ",push_token = " ";
