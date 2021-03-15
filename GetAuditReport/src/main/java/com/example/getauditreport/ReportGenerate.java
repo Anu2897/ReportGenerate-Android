@@ -1,5 +1,7 @@
 package com.example.getauditreport;
 
+
+
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -17,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ReportGenerate {
-
     public  static void run(Context context){
         final Handler handler = new Handler(Looper.getMainLooper());
         handler.postDelayed(new Runnable() {
@@ -27,7 +28,6 @@ public class ReportGenerate {
                 generate(context);
             }
         }, 60000);
-
     }
 
 
@@ -65,13 +65,14 @@ public class ReportGenerate {
     private  static void generate(Context context) {
         File file = new File(context.getFilesDir() ,"logs.txt");
         FileOutputStream fos;
-        String  id= " ", auto_integrate = " ",sdk_version = " ",sdk_initialize=" ",push_token = " ";
+        String  id= " ", auto_integrate = " ",sdk_version = " ",sdk_initialize=" ",push_token = " ",onUserlogin = " ",user_details=" ";
         String [] temp1, temp2 ;
         ArrayList<String> listeners = new ArrayList<String>();
         Map<String,String> evtName = new HashMap<>();
         ArrayList<String> evtData = new ArrayList<String>();
         HashMap<String,String> keyval = new HashMap<String,String>();
         String arr [] = new String[0];
+        String [] details = new String[0] ;
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -145,6 +146,21 @@ public class ReportGenerate {
                     //Log.w("checkstring",push_token);
                 }
 
+                if(line.contains("ON_USER_LOGIN") || line.contains("onUserLogin")){
+                    onUserlogin= "OnUserLogin method is used ";
+
+                }
+
+                if(line.contains("Queued event:") && line.contains("Employed")) {
+                    arr = line.split("\"profile\":");
+                    //Log.w("checkstring",arr[1]);
+                    user_details = arr[1].substring(2, arr[1].length() - 1);
+                    details = user_details.split(",");
+                    for (int i = 0; i < details.length; i++) {
+                        Log.w("checkstring", details[i]);
+                    }
+                }
+
             }
 
             //*************** FILE FORMATTING ******************
@@ -169,7 +185,12 @@ public class ReportGenerate {
             fos.write(id.getBytes());
 
             fos.write("\n\n\n**** IDENTITY MANAGEMENT ****\n".getBytes());
+            fos.write(onUserlogin.getBytes());
             fos.write("\n\n\n**** PROFILE DETAILS ****\n".getBytes());
+            for (int i = 0; i < details.length; i++) {
+                fos.write(details[i].replace("}",".").getBytes());
+                fos.write("\n".getBytes());
+            }
             fos.write("\n\n\n**** ACTIVITY ****\n".getBytes());
             for(Map.Entry<String, String> m:evtName.entrySet()){
                 fos.write(("Event Name : "+m.getKey()).getBytes());
@@ -187,4 +208,5 @@ public class ReportGenerate {
         }
 
     }
+
 }
