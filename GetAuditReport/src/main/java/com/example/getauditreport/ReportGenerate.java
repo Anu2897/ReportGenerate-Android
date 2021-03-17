@@ -110,7 +110,7 @@ public class ReportGenerate {
                     sdk_version = arr[1];
                 }
                 //TO GET ALL LISTENERS
-                if(line.contains("pushnotification.") || line.contains("InAppNotificationActivity") || line.contains("FcmTokenListenerService")){
+                if(line.contains("present")){
                     arr = line.split("CleverTap:");
                     listeners.add(arr[1]);
                 }
