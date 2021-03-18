@@ -96,10 +96,11 @@ public class ReportGenerate {
                 // TO GET THE CTID
                 if(line.contains("Send queue contains")) {
                     arr = line.split("items:");
-                    arr = arr[1].split("g");
-                    arr = arr[1].split(":");
+                    arr = arr[1].split("\"g\":");
                     arr = arr[1].split(",");
+                    //Log.w("checkstring", arr[0]);
                     id = arr[0].substring(1, arr[0].length() - 1);
+                    Log.w("checkstring", id);
 
                 }
 
@@ -151,7 +152,13 @@ public class ReportGenerate {
 
                 }
 
-                if(line.contains("Queued event:") && line.contains("Employed")) {
+                if(line.contains("onUserLogin")){
+                    arr = line.split("onUserLogin:");
+                    arr = arr[1].split("\\{|\\}");
+                    details = arr[1].split(",");
+                }
+
+                /*if(line.contains("Queued event:") && line.contains("Employed")) {
                     arr = line.split("\"profile\":");
                     //Log.w("checkstring",arr[1]);
                     user_details = arr[1].substring(2, arr[1].length() - 1);
@@ -159,12 +166,12 @@ public class ReportGenerate {
                     for (int i = 0; i < details.length; i++) {
                         Log.w("checkstring", details[i]);
                     }
-                }
+                }*/
 
             }
 
             //*************** FILE FORMATTING ******************
-            fos.write("**** AUTO iNTEGRATE ****\n".getBytes());
+            fos.write("**** ACTIVITY LIFECYCLE CALLBACK ****\n".getBytes());
             fos.write(auto_integrate.getBytes());
             //Log.w("checkstring", auto_integrate);
             fos.write("\n\n\n**** SDK INITIALIZED ****\n".getBytes());
@@ -188,7 +195,7 @@ public class ReportGenerate {
             fos.write(onUserlogin.getBytes());
             fos.write("\n\n\n**** PROFILE DETAILS ****\n".getBytes());
             for (int i = 0; i < details.length; i++) {
-                fos.write(details[i].replace("}",".").getBytes());
+                fos.write(details[i].getBytes());
                 fos.write("\n".getBytes());
             }
             fos.write("\n\n\n**** ACTIVITY ****\n".getBytes());
