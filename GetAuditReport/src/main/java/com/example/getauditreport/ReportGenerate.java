@@ -156,10 +156,10 @@ public class ReportGenerate {
                     user_details = arr[1].split(",");
 
                 }
-                else if(line.contains("Send queue contains")  && line.contains("Employed")) {
+                else if(line.contains("Send queue contains") && line.contains("profile")) {
                     arr = line.split("\"profile\":");
-                    //Log.w("checkstring",arr[1]);
-                    details = arr[1].substring(2, arr[1].length() - 1);
+                    Log.w("checkstring",arr[2]);
+                    details = arr[2].substring(2,arr[2].length()-2);
                     queued_user_details = details.split(",");
 
                 }
