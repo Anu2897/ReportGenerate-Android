@@ -65,14 +65,15 @@ public class ReportGenerate {
     private  static void generate(Context context) {
         File file = new File(context.getFilesDir() ,"logs.txt");
         FileOutputStream fos;
-        String  id= " ", auto_integrate = " ",sdk_version = " ",sdk_initialize=" ",push_token = " ",onUserlogin = " ",user_details=" ";
+        String  id= " ", auto_integrate = " ",sdk_version = " ",sdk_initialize=" ",push_token = " ",onUserlogin = " ",details=" ";
         String [] temp1, temp2 ;
         ArrayList<String> listeners = new ArrayList<String>();
         Map<String,String> evtName = new HashMap<>();
         ArrayList<String> evtData = new ArrayList<String>();
         HashMap<String,String> keyval = new HashMap<String,String>();
         String arr [] = new String[0];
-        String [] details = new String[0] ;
+        String [] user_details = new String[0] ;
+        String [] queued_user_details = new String[0];
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -147,26 +148,21 @@ public class ReportGenerate {
                     //Log.w("checkstring",push_token);
                 }
 
-                if(line.contains("ON_USER_LOGIN") || line.contains("onUserLogin")){
-                    onUserlogin= "OnUserLogin method is used ";
-
-                }
 
                 if(line.contains("onUserLogin")){
+                    onUserlogin = "OnUerLogin is used ";
                     arr = line.split("onUserLogin:");
                     arr = arr[1].split("\\{|\\}");
-                    details = arr[1].split(",");
-                }
+                    user_details = arr[1].split(",");
 
-                /*if(line.contains("Queued event:") && line.contains("Employed")) {
+                }
+                else if(line.contains("Send queue contains")  && line.contains("Employed")) {
                     arr = line.split("\"profile\":");
                     //Log.w("checkstring",arr[1]);
-                    user_details = arr[1].substring(2, arr[1].length() - 1);
-                    details = user_details.split(",");
-                    for (int i = 0; i < details.length; i++) {
-                        Log.w("checkstring", details[i]);
-                    }
-                }*/
+                    details = arr[1].substring(2, arr[1].length() - 1);
+                    queued_user_details = details.split(",");
+
+                }
 
             }
 
@@ -192,11 +188,22 @@ public class ReportGenerate {
             fos.write(id.getBytes());
 
             fos.write("\n\n\n**** IDENTITY MANAGEMENT ****\n".getBytes());
+            fos.write("onUserLogin : ".getBytes());
             fos.write(onUserlogin.getBytes());
             fos.write("\n\n\n**** PROFILE DETAILS ****\n".getBytes());
-            for (int i = 0; i < details.length; i++) {
-                fos.write(details[i].getBytes());
-                fos.write("\n".getBytes());
+            if(user_details.length==0){
+                for (int i = 0; i < queued_user_details.length; i++) {
+                    fos.write(queued_user_details[i].getBytes());
+                    fos.write("\n".getBytes());
+                }
+            }
+            else{
+                fos.write("onUserLogin method details\n".getBytes());
+                for (int i = 0; i < user_details.length; i++) {
+                    fos.write(user_details[i].getBytes());
+                    fos.write("\n".getBytes());
+                }
+
             }
             fos.write("\n\n\n**** ACTIVITY ****\n".getBytes());
             for(Map.Entry<String, String> m:evtName.entrySet()){
