@@ -114,7 +114,8 @@ public class ReportGenerate {
                 //TO GET ALL LISTENERS
                 if(line.contains("present")){
                     arr = line.split("CleverTap:");
-                    listeners.add(arr[1]);
+                    if(!listeners.contains(arr[1]))
+                        listeners.add(arr[1]);
                 }
 
                 //TO PRINT EVENT AND EVENT DETAILS
@@ -148,7 +149,7 @@ public class ReportGenerate {
                     //Log.w("checkstring",push_token);
                 }
 
-
+                //ON USER LOGIN AND USER DETAILS
                 if(line.contains("onUserLogin")){
                     onUserlogin = "OnUerLogin is used ";
                     arr = line.split("onUserLogin:");
@@ -158,10 +159,13 @@ public class ReportGenerate {
                 }
                 else if(line.contains("Send queue contains") && line.contains("profile")) {
                     arr = line.split("\"profile\":");
-                    Log.w("checkstring",arr[2]);
-                    details = arr[2].substring(2,arr[2].length()-2);
-                    queued_user_details = details.split(",");
-
+                    for(int i=0;i<arr.length;i++){
+                        if(arr[i].contains("Email")){
+                            Log.w("checkstring", arr[i]);
+                            details = arr[i].substring(2,arr[i].length()-2);
+                            queued_user_details = details.split(",");
+                        }
+                    }
                 }
 
             }
