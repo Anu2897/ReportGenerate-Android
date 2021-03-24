@@ -140,13 +140,17 @@ public class ReportGenerate {
 
                 }
                 //TO GET PUSH TOKEN
-                if(line.contains("action")){
+                if( line.contains("Send queue contains") && line.contains("action")){
                     arr = line.split("register");
-                    arr = arr[1].split("id");
-                    arr = arr[1].split(":|,");
+                    //Log.w("checkstring", arr[1]);
+                    arr = arr[1].split("\"id\":");
+                    //Log.w("checkstring", arr[1]);
+                    arr = arr[1].split(",");
                     //Log.w("checkstring",arr[1]+":"+arr[2]);
-                    push_token = arr[1]+":"+arr[2];
-                    //Log.w("checkstring",push_token);
+                    //Log.w("checkstring", arr[0]);
+                    //push_token = arr[1]+":"+arr[2];
+                    push_token = arr[0];
+                    Log.w("checkstring",push_token);
                 }
 
                 //ON USER LOGIN AND USER DETAILS
