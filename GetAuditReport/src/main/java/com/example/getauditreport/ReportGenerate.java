@@ -65,12 +65,11 @@ public class ReportGenerate {
     private  static void generate(Context context) {
         File file = new File(context.getFilesDir() ,"logs.txt");
         FileOutputStream fos;
-        String  id= " ", auto_integrate = " ",sdk_version = " ",sdk_initialize=" ",push_token = " ",onUserlogin = " ",details=" ";
-        String [] temp1, temp2 ;
+        String  id= " ", auto_integrate = " ",sdk_version = " ",sdk_initialize=" ",push_token = " ",onUserLogin = " ",details=" ";
+        String [] temp1;
         ArrayList<String> listeners = new ArrayList<String>();
         Map<String,String> evtName = new HashMap<>();
         ArrayList<String> evtData = new ArrayList<String>();
-        HashMap<String,String> keyval = new HashMap<String,String>();
         String arr [] = new String[0];
         String [] user_details = new String[0] ;
         String [] queued_user_details = new String[0];
@@ -99,10 +98,7 @@ public class ReportGenerate {
                     arr = line.split("items:");
                     arr = arr[1].split("\"g\":");
                     arr = arr[1].split(",");
-                    //Log.w("checkstring", arr[0]);
                     id = arr[0].substring(1, arr[0].length() - 1);
-                    Log.w("checkstring", id);
-
                 }
 
                 //TO GET THE SDK VERSION
@@ -122,19 +118,14 @@ public class ReportGenerate {
                 if(line.contains("Send queue contains")){
                     arr = line.split("items:");
                     String val = arr[1].substring(2,arr[1].length()-1);
-                    //Log.w("checkstring",val);
-                    //arr = val.split(":|,");
                     arr = val.split("\\{|\\}");
                     for(int i =0;i<arr.length;i++){
-                        //Log.w("checkstring",arr[i]);
                         if(arr[i].contains("evtName")) {
                             temp1 = arr[i].split(",|:");
                             evtData.add(arr[i+1]);
-                            //Log.w("checkstring",temp1[1]);
                             for(String j : evtData){
                                 evtName.put(temp1[1],j);
                             }
-
                         }
                     }
 
@@ -142,22 +133,17 @@ public class ReportGenerate {
                 //TO GET PUSH TOKEN
                 if( line.contains("Send queue contains") && line.contains("action")){
                     arr = line.split("register");
-                    //Log.w("checkstring", arr[1]);
                     arr = arr[1].split("\"id\":");
-                    //Log.w("checkstring", arr[1]);
                     arr = arr[1].split(",");
-                    //Log.w("checkstring",arr[1]+":"+arr[2]);
-                    //Log.w("checkstring", arr[0]);
-                    //push_token = arr[1]+":"+arr[2];
                     push_token = arr[0];
-                    Log.w("checkstring",push_token);
                 }
 
                 //ON USER LOGIN AND USER DETAILS
                 if(line.contains("onUserLogin")){
-                    onUserlogin = "OnUerLogin is used ";
+                    onUserLogin = "OnUerLogin is used ";
                     arr = line.split("onUserLogin:");
                     arr = arr[1].split("\\{|\\}");
+                    arr[1] = arr[1].replaceAll("\\s","");
                     user_details = arr[1].split(",");
 
                 }
@@ -165,8 +151,7 @@ public class ReportGenerate {
                     arr = line.split("\"profile\":");
                     for(int i=0;i<arr.length;i++){
                         if(arr[i].contains("Email")){
-                            Log.w("checkstring", arr[i]);
-                            details = arr[i].substring(2,arr[i].length()-2);
+                            details = arr[i].substring(1,arr[i].length()-2);
                             queued_user_details = details.split(",");
                         }
                     }
@@ -177,7 +162,6 @@ public class ReportGenerate {
             //*************** FILE FORMATTING ******************
             fos.write("**** ACTIVITY LIFECYCLE CALLBACK ****\n".getBytes());
             fos.write(auto_integrate.getBytes());
-            //Log.w("checkstring", auto_integrate);
             fos.write("\n\n\n**** SDK INITIALIZED ****\n".getBytes());
             fos.write(sdk_initialize.getBytes());
             fos.write("\n\n\n**** LISTENERS ****\n".getBytes());
@@ -197,10 +181,13 @@ public class ReportGenerate {
 
             fos.write("\n\n\n**** IDENTITY MANAGEMENT ****\n".getBytes());
             fos.write("onUserLogin : ".getBytes());
-            fos.write(onUserlogin.getBytes());
+            fos.write(onUserLogin.getBytes());
             fos.write("\n\n\n**** PROFILE DETAILS ****\n".getBytes());
             if(user_details.length==0){
                 for (int i = 0; i < queued_user_details.length; i++) {
+                    if(queued_user_details[i].endsWith("}")){
+                        queued_user_details[i] = queued_user_details[i].substring(0,queued_user_details[i].length()-1);
+                    }
                     fos.write(queued_user_details[i].getBytes());
                     fos.write("\n".getBytes());
                 }
@@ -216,7 +203,6 @@ public class ReportGenerate {
             fos.write("\n\n\n**** ACTIVITY ****\n".getBytes());
             for(Map.Entry<String, String> m:evtName.entrySet()){
                 fos.write(("Event Name : "+m.getKey()).getBytes());
-                //Log.w("checkstring",values.getClass().getName());
                 fos.write("\nProperties : ".getBytes());
                 fos.write(m.getValue().getBytes());
                 fos.write("\n".getBytes());
@@ -228,6 +214,11 @@ public class ReportGenerate {
         catch (IOException e) {
             //You'll need to add proper error handling here
         }
+        file.delete();
+        if(file.exists()){
+            if(file.exists()){
+                context.deleteFile(file.getName());
+            }       }
 
     }
 
