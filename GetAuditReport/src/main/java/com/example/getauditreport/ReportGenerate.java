@@ -185,9 +185,25 @@ public class ReportGenerate {
             fos.write("\n\n\n**** PROFILE DETAILS ****\n".getBytes());
             if(user_details.length==0){
                 for (int i = 0; i < queued_user_details.length; i++) {
-                    if(queued_user_details[i].endsWith("}")){
+                    if(queued_user_details[i].endsWith("}") && queued_user_details[i].startsWith("\"")){
                         queued_user_details[i] = queued_user_details[i].substring(0,queued_user_details[i].length()-1);
                     }
+                    if(queued_user_details[i].startsWith("\"")){
+                        String s2="";
+                        queued_user_details[i] = queued_user_details[i].substring(1,queued_user_details[i].length());
+                        int index = queued_user_details[i].indexOf(":");
+                        if(queued_user_details[i].endsWith("\"")){
+                            queued_user_details[i] = queued_user_details[i].substring(0,queued_user_details[i].length()-1);
+                        }
+                        String s1 =queued_user_details[i].substring(0,index-1);
+                        s2 = queued_user_details[i].substring(index+1,queued_user_details[i].length()-0);
+                        if(s2.startsWith("\"")){
+                            s2 = s2.substring(1,s2.length()-0);
+                        }
+                        queued_user_details[i] = s1+" : "+s2;
+                        //Log.w("checkstring",queued_user_details[i]);
+                    }
+                    //Log.w("checkstring",queued_user_details[i]);
                     fos.write(queued_user_details[i].getBytes());
                     fos.write("\n".getBytes());
                 }
@@ -202,9 +218,14 @@ public class ReportGenerate {
             }
             fos.write("\n\n\n**** ACTIVITY ****\n".getBytes());
             for(Map.Entry<String, String> m:evtName.entrySet()){
-                fos.write(("Event Name : "+m.getKey()).getBytes());
+                fos.write(("Event Name : "+m.getKey().substring(1,m.getKey().length()-1)).getBytes());
                 fos.write("\nProperties : ".getBytes());
-                fos.write(m.getValue().getBytes());
+                String [] values = m.getValue().split(",");
+                //fos.write(m.getValue().getBytes());
+                for(int i =0;i<values.length;i++){
+                    fos.write(values[i].getBytes());
+                    fos.write(" | ".getBytes());
+                }
                 fos.write("\n".getBytes());
             }
             br.close();
