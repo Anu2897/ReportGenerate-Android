@@ -223,8 +223,25 @@ public class ReportGenerate {
                 String [] values = m.getValue().split(",");
                 //fos.write(m.getValue().getBytes());
                 for(int i =0;i<values.length;i++){
-                    fos.write(values[i].getBytes());
-                    fos.write(" | ".getBytes());
+                        if(values[i].startsWith("\"")){
+                            String s2="";
+                            values[i] = values[i].substring(1,values[i].length()-0);
+                            int index = values[i].indexOf(":");
+                            if(values[i].endsWith("\"")){
+                                values[i] = values[i].substring(0,values[i].length()-1);
+                            }
+                            String s1 =values[i].substring(0,index-1);
+
+                            s2 = values[i].substring(index+1,values[i].length()-0);
+                            if(s2.startsWith("\"")){
+                                s2 = s2.substring(1,s2.length()-0);
+                            }
+                            values[i] = s1+" : "+s2;
+                            //Log.w("checkstring",s1+ " : "+s2);
+                        }
+                        //Log.w("checkstring",values[i]);
+                        fos.write(values[i].getBytes());
+                        fos.write(" | ".getBytes());
                 }
                 fos.write("\n".getBytes());
             }
