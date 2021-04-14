@@ -83,7 +83,7 @@ public class ReportGenerate {
                 //TO CHECK INTEGRATION
                 if(line.contains("Activity Lifecycle Callback")){
                     arr = line.split("CleverTap:");
-                    auto_integrate = arr[1];
+                    auto_integrate = arr[1].substring(1,arr[1].length()-0);
 
                 }
 
@@ -91,7 +91,7 @@ public class ReportGenerate {
                 //TO CHECK INITIALIZATION
                 if(line.contains("CleverTap SDK initialized with accountId")) {
                     arr = line.split("CleverTap:");
-                    sdk_initialize = arr[1];
+                    sdk_initialize = arr[1].substring(1,arr[1].length()-0);
                 }
                 // TO GET THE CTID
                 if(line.contains("Send queue contains")) {
@@ -110,8 +110,11 @@ public class ReportGenerate {
                 //TO GET ALL LISTENERS
                 if(line.contains("present")){
                     arr = line.split("CleverTap:");
-                    if(!listeners.contains(arr[1]))
-                        listeners.add(arr[1]);
+                    String listener = arr[1].substring(1);
+                    // Log.w("checkstring", arr[1]);
+                    if(!listeners.contains(listener)){
+                        listeners.add(listener);
+                    }
                 }
 
                 //TO PRINT EVENT AND EVENT DETAILS
@@ -145,6 +148,9 @@ public class ReportGenerate {
                     arr = arr[1].split("\\{|\\}");
                     arr[1] = arr[1].replaceAll("\\s","");
                     user_details = arr[1].split(",");
+                    for(int i =0;i<user_details.length;i++){
+                        user_details[i] = user_details[i].replace("="," : ");
+                    }
 
                 }
                 else if(line.contains("Send queue contains") && line.contains("profile")) {
@@ -239,11 +245,11 @@ public class ReportGenerate {
                                 s2 = s2.substring(1,s2.length()-0);
                             }
                             values[i] = s1+" : "+s2;
-                            //Log.w("checkstring",s1+ " : "+s2);
                         }
-                        //Log.w("checkstring",values[i]);
-                        fos.write(values[i].getBytes());
-                        fos.write(" | ".getBytes());
+                        if(!values[i].isEmpty()){
+                            fos.write(values[i].getBytes());
+                            fos.write(" | ".getBytes());
+                        }
                 }
                 fos.write("\n".getBytes());
             }
