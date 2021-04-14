@@ -180,8 +180,10 @@ public class ReportGenerate {
             fos.write(id.getBytes());
 
             fos.write("\n\n\n**** IDENTITY MANAGEMENT ****\n".getBytes());
-            fos.write("onUserLogin : ".getBytes());
-            fos.write(onUserLogin.getBytes());
+            if(onUserLogin != " "){
+                fos.write("onUserLogin : ".getBytes());
+                fos.write(onUserLogin.getBytes());
+            }
             fos.write("\n\n\n**** PROFILE DETAILS ****\n".getBytes());
             if(user_details.length==0){
                 for (int i = 0; i < queued_user_details.length; i++) {
@@ -248,6 +250,8 @@ public class ReportGenerate {
             br.close();
             evtData.clear();
             evtName.clear();
+            onUserLogin = " ";
+            user_details = null;
         }
         catch (IOException e) {
             //You'll need to add proper error handling here
