@@ -54,9 +54,6 @@ public class ReportGenerate {
 
             fos = context.openFileOutput("logs.txt", context.MODE_PRIVATE);
             fos.write(log.toString().getBytes());
-            Toast.makeText(context, "Saved to " + context.getFilesDir() + "/" + "logs.txt",
-                    Toast.LENGTH_LONG).show();
-            Log.w("filepath",context.getFilesDir().toString());
         } catch (IOException e) {
             Thread.currentThread().interrupt();
         }
@@ -267,6 +264,7 @@ public class ReportGenerate {
             if(file.exists()){
                 context.deleteFile(file.getName());
             }       }
+        Log.w("filepath"," /data/data/com.example.project_name/files/AuditReport.txt");
 
     }
 
